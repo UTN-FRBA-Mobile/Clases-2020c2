@@ -2,22 +2,56 @@ package ar.edu.utn.frba.mobile.clases_2020c2
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import ar.edu.utn.frba.mobile.clases_2020c2.ui.main.MainFragment
-import ar.edu.utn.frba.mobile.clases_2020c2.ui.main.MainViewModel
-import ar.edu.utn.frba.mobile.clases_2020c2.ui.main.MainViewModelResources
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import ar.edu.utn.frba.mobile.clases_2020c2.ui.dashboard.DashboardFragment
+import ar.edu.utn.frba.mobile.clases_2020c2.ui.login.LoginFragment
+import ar.edu.utn.frba.mobile.clases_2020c2.ui.signup.SignUpStepOneFragment
+import ar.edu.utn.frba.mobile.clases_2020c2.ui.signup.SignUpStepTwoFragment
 import kotlinx.android.synthetic.main.main_activity.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoginFragment.OnFragmentInteractionListener, SignUpStepOneFragment.OnFragmentInteractionListener, SignUpStepTwoFragment.OnFragmentInteractionListener {
+    private lateinit var loginFragment: Fragment
+    private lateinit var signUpStepOneFragment: Fragment
+    private lateinit var signUpStepTwoFragment: Fragment
+    private lateinit var dashboardFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         setSupportActionBar(toolbar)
         if (savedInstanceState == null) {
+            loginFragment = LoginFragment()
+
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
+                    .replace(R.id.container, loginFragment)
                     .commitNow()
         }
+    }
+
+    override fun onLogin(username: String, password: String) {
+        dashboardFragment = DashboardFragment()
+
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+        supportFragmentManager.beginTransaction().remove(loginFragment).add(R.id.container, dashboardFragment).commitNow()
+    }
+
+    override fun onSignUp() {
+        signUpStepOneFragment = SignUpStepOneFragment()
+
+        supportFragmentManager.beginTransaction().remove(loginFragment).add(R.id.container, signUpStepOneFragment).addToBackStack(null).commit()
+    }
+
+    override fun onSignUpNextStep() {
+        signUpStepTwoFragment = SignUpStepTwoFragment()
+
+        supportFragmentManager.beginTransaction().remove(signUpStepOneFragment).add(R.id.container, signUpStepTwoFragment).addToBackStack(null).commit()
+    }
+
+    override fun onFinishSignUp() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+        supportFragmentManager.beginTransaction().show(loginFragment).commitNow()
     }
 }
