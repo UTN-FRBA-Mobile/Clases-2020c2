@@ -1,4 +1,5 @@
-# Clases-2020c2
-Prácticas de la materia - 2° Cuatrimestre 2020
-
-Este repositorio incluye código inicial para realizar tareas durante las clases. Cada branch representa una práctica distinta.
+# Clases-2019c1
+## Práctica Clase 03
+###### ViewModel + RecyclerView
+- Ejemplo de uso de ViewModel para navegación sencilla entre Fragments
+- Ejemplo de uso de RecyclerView
