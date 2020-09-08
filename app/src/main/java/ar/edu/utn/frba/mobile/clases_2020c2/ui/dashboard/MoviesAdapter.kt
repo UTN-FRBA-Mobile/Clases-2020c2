@@ -16,20 +16,13 @@ class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     private val VIEWTYPE_CATEGORY: Int = 1
     private val VIEWTYPE_MOVIE: Int = 2
 
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        lateinit var viewMovieName: TextView
-        lateinit var viewMoviePoster: ImageView
+    override fun getItemCount() = myDataset.size
 
-        fun bindMovieName(movieName: String) {
-            if (!this::viewMovieName.isInitialized)
-                viewMovieName = itemView.movie_name
-            viewMovieName.text = movieName
-        }
-        fun bindMoviePoster(moviePoster: Int) {
-            if (!this::viewMoviePoster.isInitialized)
-                viewMoviePoster = itemView.movie_poster
-            viewMoviePoster.setImageResource(moviePoster)
-        }
+    override fun getItemViewType(position: Int): Int {
+        return if(myDataset[position].IsCategory)
+            VIEWTYPE_CATEGORY
+        else
+            VIEWTYPE_MOVIE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesAdapter.MyViewHolder {
@@ -44,17 +37,26 @@ class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindMovieName(myDataset[position].movieName)
-        if(myDataset[position].moviePoster != null)
-            holder.bindMoviePoster(myDataset[position].moviePoster!!)
+        holder.bindMovie(myDataset[position])
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if(myDataset[position].IsCategory)
-            VIEWTYPE_CATEGORY
-        else
-            VIEWTYPE_MOVIE
-    }
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        lateinit var viewMovieName: TextView
+        lateinit var viewMoviePoster: ImageView
 
-    override fun getItemCount() = myDataset.size
+        fun bindMovie(movie: Movie) {
+            initViewProperties()
+
+            viewMovieName.text = movie.movieName
+            if(movie.moviePoster != null)
+                viewMoviePoster.setImageResource(movie.moviePoster)
+        }
+
+        private fun initViewProperties() {
+            if (!this::viewMovieName.isInitialized)
+                viewMovieName = itemView.movie_name
+            if (!this::viewMoviePoster.isInitialized)
+                viewMoviePoster = itemView.movie_poster
+        }
+    }
 }
