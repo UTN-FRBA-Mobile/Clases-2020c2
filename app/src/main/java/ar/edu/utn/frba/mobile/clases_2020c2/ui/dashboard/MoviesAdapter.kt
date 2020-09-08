@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ar.edu.utn.frba.mobile.clases_2020c2.R
 import ar.edu.utn.frba.mobile.clases_2020c2.core.Movie
+import kotlinx.android.synthetic.main.view_listitem_movie.view.*
 
 class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     RecyclerView.Adapter<MoviesAdapter.MyViewHolder>() {
@@ -15,10 +16,23 @@ class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     private val VIEWTYPE_CATEGORY: Int = 1
     private val VIEWTYPE_MOVIE: Int = 2
 
-    class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        lateinit var viewMovieName: TextView
+        lateinit var viewMoviePoster: ImageView
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): MoviesAdapter.MyViewHolder {
+        fun bindMovieName(movieName: String) {
+            if (!this::viewMovieName.isInitialized)
+                viewMovieName = itemView.movie_name
+            viewMovieName.text = movieName
+        }
+        fun bindMoviePoster(moviePoster: Int) {
+            if (!this::viewMoviePoster.isInitialized)
+                viewMoviePoster = itemView.movie_poster
+            viewMoviePoster.setImageResource(moviePoster)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesAdapter.MyViewHolder {
         val view : View = if(viewType == VIEWTYPE_CATEGORY)
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_listitem_category, parent, false)
@@ -30,9 +44,9 @@ class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.view.findViewById<TextView>(R.id.movie_name).text = myDataset[position].movieName
+        holder.bindMovieName(myDataset[position].movieName)
         if(myDataset[position].moviePoster != null)
-            holder.view.findViewById<ImageView>(R.id.movie_poster).setImageResource(myDataset[position].moviePoster!!)
+            holder.bindMoviePoster(myDataset[position].moviePoster!!)
     }
 
     override fun getItemViewType(position: Int): Int {
