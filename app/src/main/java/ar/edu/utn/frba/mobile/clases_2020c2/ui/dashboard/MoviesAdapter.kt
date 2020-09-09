@@ -41,22 +41,13 @@ class MoviesAdapter(private val myDataset: MutableList<Movie>) :
     }
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        lateinit var viewMovieName: TextView
-        lateinit var viewMoviePoster: ImageView
+        private val viewMovieName: TextView = itemView.movie_name
+        private val viewMoviePoster: ImageView? = itemView.movie_poster
 
         fun bindMovie(movie: Movie) {
-            initViewProperties()
-
             viewMovieName.text = movie.movieName
             if(movie.moviePoster != null)
-                viewMoviePoster.setImageResource(movie.moviePoster)
-        }
-
-        private fun initViewProperties() {
-            if (!this::viewMovieName.isInitialized)
-                viewMovieName = itemView.movie_name
-            if (!this::viewMoviePoster.isInitialized)
-                viewMoviePoster = itemView.movie_poster
+                viewMoviePoster!!.setImageResource(movie.moviePoster)
         }
     }
 }
