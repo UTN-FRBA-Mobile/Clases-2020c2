@@ -2,14 +2,19 @@ package ar.edu.utn.frba.mobile.clases_2020c2.ui.main
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import ar.edu.utn.frba.mobile.clases_2020c2.R
 import kotlinx.android.synthetic.main.main_fragment.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * A simple [Fragment] subclass.
@@ -32,19 +37,6 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        tweetsAdapter = TweetsAdapter(listener)
-        list.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = tweetsAdapter
-        }
-    }
-
-    fun onButtonPressed() {
-        listener?.showFragment(StatusUpdateFragment())
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
@@ -56,13 +48,31 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        // Simulamos un request
+
         list.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
-        Handler().postDelayed({
-            list.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-        }, 1000)
+
+        val service = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create()) // Para parsear automágicamente el json
+            .baseUrl("https://demo1958294.mockable.io/")
+            .build()
+            .create(TweetsService::class.java) // la interfaz que diseñaron antes
+
+        service.getTweets().enqueue(object: Callback<GetTweetsResponse> {
+            override fun onResponse(call: Call<GetTweetsResponse>, response: Response<GetTweetsResponse>) {
+                tweetsAdapter = TweetsAdapter(listener, response.body()!!.tweets)
+                list.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = tweetsAdapter
+                }
+
+                list.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
+            override fun onFailure(call: Call<GetTweetsResponse>, error: Throwable) {
+                Toast.makeText(activity, "No tweets founds!", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onDetach() {
