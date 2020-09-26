@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,7 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import ar.edu.utn.frba.mobile.clases_2020c2.R
 import ar.edu.utn.frba.mobile.clases_2020c2.adapters.ViewPagerAdapter
 import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.ExternalContent
-import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.InternalStorage
+import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.ExternalStorage
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
@@ -77,11 +76,6 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
-        Thread({
-            Looper.prepare()
-            processHandler = Handler(Looper.myLooper())
-            Looper.loop()
-        }).start()
     }
 
     override fun onDetach() {
@@ -106,6 +100,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
             activity?.runOnUiThread { image_to_edit.setImageBitmap(filteredImage) }
         }
     }
+
     fun quickFilter() {
         processHandler.removeCallbacksAndMessages(null)
         processHandler.post {
@@ -168,7 +163,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
     }
 
     fun save() {
-        InternalStorage.saveFile(context!!, filteredImage, Calendar.getInstance().time.toString())
+        ExternalStorage.saveFile(context!!, filteredImage, Calendar.getInstance().time.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

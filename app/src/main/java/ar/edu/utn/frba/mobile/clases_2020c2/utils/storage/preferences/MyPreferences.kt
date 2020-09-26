@@ -11,9 +11,14 @@ object MyPreferences {
     }
 
     fun setGridImagesListPreferredView(context: Context, value: Boolean) {
+        val editor = getPreferences(context).edit()
+
+        editor.putBoolean(showGridKey, value)
+
+        editor.apply()
     }
 
     fun isGridImagesListPreferredView(context: Context): Boolean {
-        return true
+        return getPreferences(context).getBoolean(showGridKey, false)
     }
 }

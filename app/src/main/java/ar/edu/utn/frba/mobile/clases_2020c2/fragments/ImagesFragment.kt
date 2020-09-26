@@ -3,18 +3,23 @@ package ar.edu.utn.frba.mobile.clases_2020c2.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import ar.edu.utn.frba.mobile.clases_2020c2.R
 import ar.edu.utn.frba.mobile.clases_2020c2.adapters.ImagesAdapter
-import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.InternalStorage
+import ar.edu.utn.frba.mobile.clases_2020c2.utils.permissions.Permissions
+import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.ExternalStorage
 import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.preferences.MyPreferences
 import kotlinx.android.synthetic.main.fragment_images.*
+
+const val externalStorageRequestCode = 9999
 
 class ImagesFragment : Fragment() {
 
@@ -43,7 +48,9 @@ class ImagesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addButton.setOnClickListener {
-            launchImagePicker()
+            if(Permissions.checkForPermissions(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, externalStorageRequestCode, "Dame tu permiso porque me da ansieda' sino.")){
+                launchImagePicker()
+            }
         }
     }
 
@@ -77,7 +84,7 @@ class ImagesFragment : Fragment() {
     }
 
     private fun getEditedPictures(): List<Uri> {
-        val files = InternalStorage.getFiles(context!!)
+        val files = ExternalStorage.getFiles(context!!)
         return files?.map { file -> file.toUri() } ?: listOf()
     }
 
@@ -88,6 +95,22 @@ class ImagesFragment : Fragment() {
                 spanCount = if (showGrid) columnCount else 1
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            externalStorageRequestCode -> {
+                if (grantResults.count() > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    launchImagePicker()
+                }
+                else {
+                    Toast.makeText(this.context, "No me diste permiso!", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
