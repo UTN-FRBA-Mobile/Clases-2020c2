@@ -2,7 +2,6 @@ package ar.edu.utn.frba.mobile.clases_2020c2
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 
 class AspectRatioFrameLayout : FrameLayout {
@@ -20,8 +19,8 @@ class AspectRatioFrameLayout : FrameLayout {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var width = View.MeasureSpec.getSize(widthMeasureSpec)
-        var height = View.MeasureSpec.getSize(heightMeasureSpec)
+        var width = MeasureSpec.getSize(widthMeasureSpec)
+        var height = MeasureSpec.getSize(heightMeasureSpec)
         val fixedSizeIsWidth: Boolean
         when (fixedEdge) {
             FIXED_WIDTH -> fixedSizeIsWidth = true
@@ -31,8 +30,8 @@ class AspectRatioFrameLayout : FrameLayout {
         }
         width = if (fixedSizeIsWidth) width else (widthHeightRatio * height).toInt()
         height = if (fixedSizeIsWidth) (width.toFloat() / widthHeightRatio).toInt() else height
-        val newWidthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-        val newHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+        val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+        val newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
         super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec)
     }
 

@@ -7,21 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import ar.edu.utn.frba.mobile.clases_2020c2.R
-import ar.edu.utn.frba.mobile.clases_2020c2.fragments.ImagesFragment.ImagesFragmentInteractionListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_image_list_item.view.*
 
-class ImagesAdapter(
-    private val mValues: List<Uri>,
-    private val mListener: ImagesFragmentInteractionListener?
-) : RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
+class ImagesAdapter(private val mValues: List<Uri>) : RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 
-    private val mOnClickListener: View.OnClickListener
-
-    init {
-        mOnClickListener = View.OnClickListener { v ->
-        }
-    }
+    private val mOnClickListener: View.OnClickListener = View.OnClickListener {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -42,7 +33,7 @@ class ImagesAdapter(
 
     override fun getItemCount(): Int = mValues.size
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val image: ImageView = mView.edited_image as ImageView
     }
 }

@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".MainFragment">
+    android:gravity="center">
 
     <TextView android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="@string/hello"/>
+        android:layout_height="wrap_content"/>
     <Button android:id="@+id/okButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

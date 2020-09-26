@@ -24,7 +24,7 @@ class ThumbnailsAdapter(
         return thumbnailItemList.size
     }
 
-    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal var thumbnail: ImageView = view.thumbnail
         internal var filterName: TextView = view.filter_name
     }

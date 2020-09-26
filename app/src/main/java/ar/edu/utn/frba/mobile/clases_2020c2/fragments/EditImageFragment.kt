@@ -41,7 +41,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
     private lateinit var filteredImage: Bitmap
     private lateinit var filtersListFragment: FiltersListFragment
     private lateinit var editImageDetailsFragment: EditImageDetailsFragment
-    private lateinit var processHandler: android.os.Handler
+    private lateinit var processHandler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +58,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         return inflater.inflate(R.layout.fragment_edit_image, container, false)
     }
 
-    override fun onViewCreated(view: android.view.View, savedInstanceState: android.os.Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         originalImage = ExternalContent.getBitmapFromGallery(context!!, imageUri, 100, 100)
@@ -98,7 +98,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         updateFilter()
     }
 
-    fun updateFilter() {
+    private fun updateFilter() {
         processHandler.removeCallbacksAndMessages(null)
         processHandler.post {
             prefilteredImage = originalFilter.processFilter(originalImage.copy(Bitmap.Config.ARGB_8888, true))
@@ -106,7 +106,8 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
             activity?.runOnUiThread { image_to_edit.setImageBitmap(filteredImage) }
         }
     }
-    fun quickFilter() {
+
+    private fun quickFilter() {
         processHandler.removeCallbacksAndMessages(null)
         processHandler.post {
             val newImage = generatedFilter.processFilter(prefilteredImage.copy(Bitmap.Config.ARGB_8888, true))
@@ -122,7 +123,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
     override fun onEditStarted() {
     }
 
-    val generatedFilter
+    private val generatedFilter
         get() = Filter().apply {
             addSubFilter(BrightnessSubFilter(brightnessFinal))
             addSubFilter(ContrastSubFilter(contrastFinal))
@@ -167,7 +168,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         contrastFinal = 1.0f
     }
 
-    fun save() {
+    private fun save() {
         InternalStorage.saveFile(context!!, filteredImage, Calendar.getInstance().time.toString())
     }
 
