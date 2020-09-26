@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -40,7 +41,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
     private lateinit var filteredImage: Bitmap
     private lateinit var filtersListFragment: FiltersListFragment
     private lateinit var editImageDetailsFragment: EditImageDetailsFragment
-    private lateinit var processHandler: android.os.Handler
+    private lateinit var processHandler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +58,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         return inflater.inflate(R.layout.fragment_edit_image, container, false)
     }
 
-    override fun onViewCreated(view: android.view.View, savedInstanceState: android.os.Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         originalImage = ExternalContent.getBitmapFromGallery(context!!, imageUri, 100, 100)
@@ -76,6 +77,11 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
+        Thread({
+            Looper.prepare()
+            processHandler = Handler(Looper.myLooper())
+            Looper.loop()
+        }).start()
     }
 
     override fun onDetach() {
@@ -92,7 +98,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         updateFilter()
     }
 
-    fun updateFilter() {
+    private fun updateFilter() {
         processHandler.removeCallbacksAndMessages(null)
         processHandler.post {
             prefilteredImage = originalFilter.processFilter(originalImage.copy(Bitmap.Config.ARGB_8888, true))
@@ -101,7 +107,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         }
     }
 
-    fun quickFilter() {
+    private fun quickFilter() {
         processHandler.removeCallbacksAndMessages(null)
         processHandler.post {
             val newImage = generatedFilter.processFilter(prefilteredImage.copy(Bitmap.Config.ARGB_8888, true))
@@ -117,7 +123,7 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
     override fun onEditStarted() {
     }
 
-    val generatedFilter
+    private val generatedFilter
         get() = Filter().apply {
             addSubFilter(BrightnessSubFilter(brightnessFinal))
             addSubFilter(ContrastSubFilter(contrastFinal))

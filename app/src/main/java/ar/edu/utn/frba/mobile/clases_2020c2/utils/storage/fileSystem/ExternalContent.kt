@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem;
+package ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,7 +21,7 @@ class ExternalContent {
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false
-            return BitmapFactory.decodeFileDescriptor(fd!!.fileDescriptor, null, options)
+            return BitmapFactory.decodeFileDescriptor(fd.fileDescriptor, null, options)
         }
 
         private fun calculateInSampleSize(

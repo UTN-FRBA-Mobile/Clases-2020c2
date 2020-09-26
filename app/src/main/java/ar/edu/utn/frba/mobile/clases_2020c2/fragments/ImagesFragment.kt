@@ -65,7 +65,7 @@ class ImagesFragment : Fragment() {
 
         with(recyclerView) {
             layoutManager = GridLayoutManager(context, if (showGrid) columnCount else 1)
-            adapter = ImagesAdapter(editedPictures, listener)
+            adapter = ImagesAdapter(editedPictures)
         }
     }
 
