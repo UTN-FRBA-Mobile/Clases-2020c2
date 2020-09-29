@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import ar.edu.utn.frba.mobile.clases_2020c2.R
 import ar.edu.utn.frba.mobile.clases_2020c2.adapters.ViewPagerAdapter
 import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.ExternalContent
-import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.InternalStorage
+import ar.edu.utn.frba.mobile.clases_2020c2.utils.storage.fileSystem.ExternalStorage
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
@@ -168,8 +168,8 @@ class EditImageFragment : Fragment(), FiltersListFragment.FiltersListFragmentLis
         contrastFinal = 1.0f
     }
 
-    private fun save() {
-        InternalStorage.saveFile(context!!, filteredImage, Calendar.getInstance().time.toString())
+    fun save() {
+        ExternalStorage.saveFile(context!!, filteredImage, Calendar.getInstance().time.toString())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
